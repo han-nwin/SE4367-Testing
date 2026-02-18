@@ -20,6 +20,9 @@ public class NamesTest {
         names.add("Alex");
         names.add("Ashley");
         names.sort();
+        // This test is flawed because it only checks the first element after sorting,
+        // which does not guarantee the entire list is sorted correctly.
+        // A proper test should verify the order of all elements in the list.
         assertTrue(names.getFirst().equals("Alex"), "Sort method");
     }
 
