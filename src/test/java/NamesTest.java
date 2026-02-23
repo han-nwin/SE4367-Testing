@@ -1,13 +1,14 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class NamesTest {
     private Names names;
 
-    @BeforeEach
+    @Before
     public void setUp() {
         names = new Names();
     }
@@ -23,7 +24,7 @@ public class NamesTest {
         // This test is flawed because it only checks the first element after sorting,
         // which does not guarantee the entire list is sorted correctly.
         // A proper test should verify the order of all elements in the list.
-        assertTrue(names.getFirst().equals("Alex"), "Sort method");
+        assertTrue("Sort method", names.getFirst().equals("Alex"));
     }
 
     // Improved test that properly verifies sorting
@@ -36,6 +37,6 @@ public class NamesTest {
         names.sort();
 
         List<String> sorted = names.getAll();
-        assertEquals(List.of("Alex", "Ashley", "Han", "Laura"), sorted);
+        assertEquals(Arrays.asList("Alex", "Ashley", "Han", "Laura"), sorted);
     }
 }
