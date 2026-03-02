@@ -2,23 +2,35 @@
 
 ### Overview
 
-Using Test-Driven Development (TDD), I wrote JUnit tests for the `Triangle.classify(s1, s2, s3)` method, which classifies a triangle as Equilateral, Isosceles, Scalene, or Invalid given three side lengths. Each step follows the **Red-Green-Refactor** cycle:
+Using Test-Driven Development (TDD), I wrote JUnit tests for the `Triangle.classify(s1, s2, s3)` method, which classifies a triangle as Equilateral, Isosceles, Scalene, or Invalid given three side lengths.
 
-- **Red**: Write a failing test for new behavior
-- **Green**: Write the minimum code to pass the test
-- **Refactor**: Clean up the code while keeping all tests passing
+Each step follows the **Red-Green-Refactor** cycle, and applies key TDD concepts from class: **Programming by Intention**, **Triangulation**, and keeping tests **Atomic** and **Isolated**.
+
+---
+
+### Programming by Intention
+
+Before writing any implementation, I designed the API from the client's perspective. I imagined calling:
+
+```java
+Triangle.classify(3, 4, 5)  // returns "Scalene"
+```
+
+This let me write tests before the method existed, focusing on **what we want the system to look like** rather than how it works internally.
 
 ---
 
 ### Step 1: Equilateral Triangle
 
-**Red**: Wrote tests asserting that three equal positive sides (e.g., 5,5,5) return `"Equilateral"`. With no implementation, the tests fail.
+**Red**: Wrote a test asserting `classify(5, 5, 5)` returns `"Equilateral"`. No implementation exists, so the test fails.
 
-**Green**: Implemented `classify()` with a single check: `if (s1 == s2 && s2 == s3) return "Equilateral"`. Tests pass.
+**Green**: Implemented `classify()` with the simplest code — even a hardcoded `return "Equilateral"` would pass.
 
-**Refactor**: Only one if-statement exists. Code is trivially simple — no refactoring needed.
+**Triangulation**: Added more inputs `(1,1,1)` and `(100,100,100)` to force a general solution: `if (s1 == s2 && s2 == s3) return "Equilateral"`. Hardcoding is no longer possible.
 
-**Tests written**:
+**Refactor**: Only one if-statement. Too simple to refactor.
+
+**Tests**:
 - `(5, 5, 5)` → Equilateral
 - `(1, 1, 1)` → Equilateral
 - `(100, 100, 100)` → Equilateral
@@ -27,13 +39,15 @@ Using Test-Driven Development (TDD), I wrote JUnit tests for the `Triangle.class
 
 ### Step 2: Isosceles Triangle
 
-**Red**: Wrote tests asserting that exactly two equal sides (e.g., 5,5,3) return `"Isosceles"`. The current code only handles equilateral, so these tests fail.
+**Red**: Wrote a test asserting `classify(5, 5, 3)` returns `"Isosceles"`. Current code only handles equilateral, so this fails.
 
-**Green**: Added an `else if` branch: `s1 == s2 || s2 == s3 || s1 == s3`. Tests pass.
+**Green**: Added an `else if` branch: `s1 == s2 || s2 == s3 || s1 == s3`.
 
-**Refactor**: Two branches now. Logic is straightforward with no duplication — no refactoring needed.
+**Triangulation**: Tested all three pair combinations — `(5,5,3)`, `(3,5,5)`, `(5,3,5)` — to ensure the condition works regardless of which two sides are equal.
 
-**Tests written**:
+**Refactor**: Two branches, no duplication. No refactoring needed.
+
+**Tests**:
 - `(5, 5, 3)` → Isosceles (first two equal)
 - `(3, 5, 5)` → Isosceles (last two equal)
 - `(5, 3, 5)` → Isosceles (first and last equal)
@@ -42,13 +56,15 @@ Using Test-Driven Development (TDD), I wrote JUnit tests for the `Triangle.class
 
 ### Step 3: Scalene Triangle
 
-**Red**: Wrote tests asserting that three different valid sides (e.g., 3,4,5) return `"Scalene"`. No branch handles this case yet, so these tests fail.
+**Red**: Wrote a test asserting `classify(3, 4, 5)` returns `"Scalene"`. No branch handles all-different sides, so this fails.
 
-**Green**: Added a final `else` branch returning `"Scalene"`. Tests pass.
+**Green**: Added a final `else` returning `"Scalene"`.
 
-**Refactor**: The if/else-if/else classification chain is clear and complete — no refactoring needed.
+**Triangulation**: Added a second scalene case `(7, 10, 5)` to confirm it generalizes beyond one example.
 
-**Tests written**:
+**Refactor**: The if/else-if/else classification chain is clear and complete. No refactoring needed.
+
+**Tests**:
 - `(3, 4, 5)` → Scalene
 - `(7, 10, 5)` → Scalene
 
@@ -56,31 +72,45 @@ Using Test-Driven Development (TDD), I wrote JUnit tests for the `Triangle.class
 
 ### Step 4: Invalid — Zero or Negative Sides
 
-**Red**: Wrote tests asserting that zero or negative side lengths return `"Invalid"`. The current code has no input validation, so these tests fail.
+**Red**: Wrote tests asserting that zero or negative sides return `"Invalid"`. The current code has no input validation, so these fail.
 
-**Green**: Added a guard clause at the top of `classify()`: `if (s1 <= 0 || s2 <= 0 || s3 <= 0) return "Invalid"`. Tests pass.
+**Green**: Added a guard clause at the top: `if (s1 <= 0 || s2 <= 0 || s3 <= 0) return "Invalid"`.
 
-**Refactor**: Guard clause follows the early-return pattern and sits cleanly before the classification logic — no refactoring needed.
+**Triangulation**: Tested zero in each position, negative in each position, and all-negative — ensuring the guard works for every parameter.
 
-**Tests written**:
-- `(0, 4, 5)`, `(4, 0, 5)`, `(4, 5, 0)` → Invalid (zero side)
-- `(-1, 4, 5)`, `(4, -2, 5)`, `(4, 5, -3)` → Invalid (negative side)
+**Refactor**: Guard clause sits cleanly before classification logic using early-return pattern. No refactoring needed.
+
+**Tests**:
+- `(0, 4, 5)`, `(4, 0, 5)`, `(4, 5, 0)` → Invalid (zero)
+- `(-1, 4, 5)`, `(4, -2, 5)`, `(4, 5, -3)` → Invalid (negative)
 - `(-1, -1, -1)` → Invalid (all negative)
 
 ---
 
 ### Step 5: Invalid — Triangle Inequality Violation
 
-**Red**: Wrote tests asserting that when the sum of any two sides is less than or equal to the third, the result is `"Invalid"`. The current code does not check the triangle inequality, so these tests fail.
+**Red**: Wrote tests asserting that when the sum of two sides is less than or equal to the third, the result is `"Invalid"`. Current code doesn't check this, so the tests fail.
 
-**Green**: Added a second guard clause: `if (s1 + s2 <= s3 || s2 + s3 <= s1 || s3 + s1 <= s2) return "Invalid"`. Tests pass.
+**Green**: Added a second guard clause: `if (s1+s2 <= s3 || s2+s3 <= s1 || s3+s1 <= s2) return "Invalid"`.
+
+**Triangulation**: Tested sum-equals-third `(2,3,5)`, sum-less-than-third `(1,2,4)`, rotating the "long" side through all three positions each time.
 
 **Refactor**: The method is now complete. Guard clauses handle validation at the top, classification logic follows below. Structure is clean — no refactoring needed.
 
-**Tests written**:
+**Tests**:
 - `(2, 3, 5)`, `(5, 2, 3)`, `(3, 5, 2)` → Invalid (sum equals third)
 - `(1, 2, 4)`, `(4, 1, 2)`, `(2, 4, 1)` → Invalid (sum less than third)
 - `(1, 1, 10)` → Invalid (one side far too long)
+
+---
+
+### Test Quality
+
+All tests follow TDD best practices:
+
+- **Atomic**: Each test method tests one specific behavior
+- **Isolated**: No shared state, no ordering dependency between tests
+- **Observable behavior**: Tests verify what `classify()` returns, not how it works internally
 
 ---
 
