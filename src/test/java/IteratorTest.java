@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -27,13 +28,13 @@ public class IteratorTest {
 
     // hasNext() base case: [C1, C5] = [T, T]
     @Test
-    public void testHasNextBaseCase() {
+    public void test_hasNext_base() {
         assertTrue(itr.hasNext());
     }
 
     // hasNext() [C1, C5] = [F, T]
     @Test
-    public void testHasNextWhenIteratorIsExhausted() {
+    public void test_hasNext_C1() {
         itr.next();
         itr.next();
 
@@ -42,7 +43,7 @@ public class IteratorTest {
 
     // hasNext() [C1, C5] = [T, F]
     @Test
-    public void testHasNextAfterConcurrentModification() {
+    public void test_hasNext_C5() {
         list.add("bird");
 
         assertTrue(itr.hasNext());
@@ -51,38 +52,40 @@ public class IteratorTest {
 
     // next() base case: [C1, C2, C5] = [T, T, T]
     @Test
-    public void testNextBaseCase() {
+    public void test_next_base() {
         assertEquals("cat", itr.next());
         assertTrue("Second element should still remain after one successful next()", itr.hasNext());
     }
 
-    // next() revised case: [C1, C2, C5] = [F, F, T]
+    // next() case (revised from [F, T, T]): [C1, C2, C5] = [F, F, T]
     @Test(expected = NoSuchElementException.class)
-    public void testNextOnEmptyCollection() {
+    public void test_next_C1() {
         itr.next();
         itr.next();
         itr.next();
     }
 
     // next() case: [C1, C2, C5] = [T, F, T]
-    @Test(expected = NoSuchElementException.class)
-    public void testNextAfterIteratorIsExhausted() {
+    @Test
+    public void test_next_C2() {
         list = new ArrayList<String>();
         list.add(null);
+        list.add("dog");
         itr = list.iterator();
         assertNull(itr.next());
+        assertTrue(itr.hasNext());
     }
 
-    // next() revised case: [C1, C2, C5] = [T, F, F]
+    // next() case (revised from [T, T, F]): [C1, C2, C5] = [T, F, F]
     @Test(expected = ConcurrentModificationException.class)
-    public void testNextAfterConcurrentModification() {
+    public void test_next_C5() {
         list.add("bird");
         itr.next();
     }
 
     // remove() base case: [C1, C2, C3, C4, C5] = [T, T, T, T, T]
     @Test
-    public void testRemoveBaseCase() {
+    public void test_remove_base() {
         assertEquals("cat", itr.next());
 
         itr.remove();
@@ -92,50 +95,57 @@ public class IteratorTest {
         assertTrue(list.contains("dog"));
     }
 
-    // remove() case: [C1, C2, C3, C4, C5] = [T, T, F, -, -]
-    @Test(expected = IllegalStateException.class)
-    public void testRemoveBeforeNext() {
-        itr.remove();
-    }
-
-    // remove() case: [C1, C2, C3, C4, C5] = [T, T, T, F, T]
-    @Test(expected = IllegalStateException.class)
-    public void testRemoveTwiceWithoutAdvancingIterator() {
-        itr.next();
-        itr.remove();
-
-        itr.remove();
-    }
-
-    // remove() case: [C1, C2, C3, C4, C5] = [T, T, T, T, T]
+    // remove() case (revised from [F, T, T, T, T]): [C1, C2, C3, C4, C5] = [F, F, T, T, T]
     @Test
-    public void testRemoveAfterAdvancingAgainIsLegal() {
-        assertEquals("cat", itr.next());
-        itr.remove();
+    public void test_remove_C1() {
+        list = new ArrayList<String>();
+        list.add(null);
+        itr = list.iterator();
+        itr.next();
 
-        assertEquals("dog", itr.next());
         itr.remove();
 
         assertTrue(list.isEmpty());
     }
 
-    // remove() revised case: [C1, C2, C3, C4, C5] = [T, F, T, T, F]
+    // remove() case: [C1, C2, C3, C4, C5] = [T, F, T, T, T]
+    @Test
+    public void test_remove_C2() {
+        list = new ArrayList<String>();
+        list.add(null);
+        list.add("dog");
+        itr = list.iterator();
+        assertNull(itr.next());
+
+        itr.remove();
+
+        assertEquals(1, list.size());
+        assertTrue(list.contains("dog"));
+    }
+
+    // remove() case: [C1, C2, C3, C4, C5] = [T, T, F, T, T]
+    @Test(expected = UnsupportedOperationException.class)
+    public void test_remove_C3() {
+        Collection<String> unmodifiable = Collections.unmodifiableCollection(list);
+        Iterator<String> unmodItr = unmodifiable.iterator();
+        unmodItr.next();
+
+        unmodItr.remove();
+    }
+
+    // remove() case: [C1, C2, C3, C4, C5] = [T, T, T, F, T]
+    @Test(expected = IllegalStateException.class)
+    public void test_remove_C4() {
+        itr.remove();
+    }
+
+    // remove() case: [C1, C2, C3, C4, C5] = [T, T, T, T, F]
     @Test(expected = ConcurrentModificationException.class)
-    public void testRemoveAfterConcurrentModification() {
+    public void test_remove_C5() {
         itr.next();
         list.add("bird");
 
         itr.remove();
     }
 
-    // remove() case: [C1, C2, C3, C4, C5] = [T, T, T, T, T]
-    @Test
-    public void testRemoveKeepsRemainingIterationConsistent() {
-        itr.next();
-        itr.remove();
-
-        assertTrue(itr.hasNext());
-        assertEquals("dog", itr.next());
-        assertFalse(itr.hasNext());
-    }
 }
