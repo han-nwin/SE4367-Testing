@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>hw-3</title>
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -30,73 +33,80 @@
 <h1 id="homework-3">Homework 3</h1>
 <h2 id="input-space-partitioning-for-genericstack">Input Space
 Partitioning for GenericStack</h2>
-<p>Methods under test: - <code>public GenericStack();</code> -
-<code>public void push(Object X);</code> -
-<code>public Object pop();</code> -
-<code>public boolean isEmpty();</code></p>
+<p>Methods under test:</p>
+<ul>
+<li><code>public GenericStack();</code></li>
+<li><code>public void push(Object X);</code></li>
+<li><code>public Object pop();</code></li>
+<li><code>public boolean isEmpty();</code></li>
+</ul>
 <h2 id="a-input-variables-including-state-variables">(a) Input Variables
 (including state variables)</h2>
 <table>
 <colgroup>
-<col style="width: 34%" />
-<col style="width: 20%" />
-<col style="width: 44%" />
+<col style="width: 8%" />
+<col style="width: 16%" />
+<col style="width: 74%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Variable</th>
 <th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><strong>S</strong></td>
 <td>State variable</td>
 <td>The current state of the stack (its contents and number of
 elements)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>X</strong></td>
 <td>Input parameter</td>
 <td>The object passed to <code>push(Object X)</code></td>
 </tr>
 </tbody>
 </table>
-<p>Notes: - <code>pop()</code> and <code>isEmpty()</code> take no
-explicit parameters — they operate only on the state variable
-<strong>S</strong>. - The constructor <code>GenericStack()</code> takes
-no parameters; it initializes <strong>S</strong> to an empty stack. -
-<strong>S</strong> is modified by <code>push</code> and
+<p>Notes:</p>
+<ul>
+<li><code>pop()</code> and <code>isEmpty()</code> take no explicit
+parameters, they operate only on the state variable
+<strong>S</strong>.</li>
+<li>The constructor <code>GenericStack()</code> takes no parameters; it
+initializes <strong>S</strong> to an empty stack.</li>
+<li><strong>S</strong> is modified by <code>push</code> and
 <code>pop</code>, and read by <code>pop</code> and
-<code>isEmpty</code>.</p>
+<code>isEmpty</code>.</li>
+</ul>
 <h2 id="b-characteristics-of-the-input-variables">(b) Characteristics of
 the Input Variables</h2>
 <table>
 <colgroup>
-<col style="width: 41%" />
-<col style="width: 25%" />
-<col style="width: 33%" />
+<col style="width: 40%" />
+<col style="width: 9%" />
+<col style="width: 50%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Characteristic</th>
 <th>Variable</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>q1: Number of elements in the stack</td>
 <td>S</td>
 <td>How many elements the stack currently holds</td>
 </tr>
-<tr class="even">
+<tr>
 <td>q2: Nullness of X</td>
 <td>X</td>
 <td>Whether the value pushed is null or not</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>q3: Type of X</td>
 <td>X</td>
 <td>The runtime type of the object being pushed</td>
@@ -108,21 +118,21 @@ Characteristics into Blocks</h2>
 <p><strong>q1: Number of elements in the stack (S):</strong></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Block</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>b1</td>
 <td>Stack is empty (size = 0)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>b2</td>
 <td>Stack has one element (size = 1)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>b3</td>
 <td>Stack has more than one element (size &gt; 1)</td>
 </tr>
@@ -131,17 +141,17 @@ Characteristics into Blocks</h2>
 <p><strong>q2: Nullness of X:</strong></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Block</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>b1</td>
 <td>X is null</td>
 </tr>
-<tr class="even">
+<tr>
 <td>b2</td>
 <td>X is non-null</td>
 </tr>
@@ -150,25 +160,25 @@ Characteristics into Blocks</h2>
 <p><strong>q3: Type of X:</strong></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Block</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>b1</td>
 <td>X is an Integer</td>
 </tr>
-<tr class="even">
+<tr>
 <td>b2</td>
 <td>X is a Double</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>b3</td>
 <td>X is a String</td>
 </tr>
-<tr class="even">
+<tr>
 <td>b4</td>
 <td>X is a Character</td>
 </tr>
@@ -177,29 +187,29 @@ Characteristics into Blocks</h2>
 <h2 id="d-designate-base-blocks">(d) Designate Base Blocks</h2>
 <table>
 <colgroup>
-<col style="width: 41%" />
-<col style="width: 30%" />
-<col style="width: 28%" />
+<col style="width: 19%" />
+<col style="width: 21%" />
+<col style="width: 59%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Characteristic</th>
 <th>Base Block</th>
 <th>Rationale</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>q1 (Stack size)</td>
 <td><strong>b2</strong> (one element)</td>
 <td>Most typical usage, stack has some content but is simple</td>
 </tr>
-<tr class="even">
+<tr>
 <td>q2 (Nullness of X)</td>
 <td><strong>b2</strong> (non-null)</td>
 <td>Normal, expected input</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>q3 (Type of X)</td>
 <td><strong>b1</strong> (Integer)</td>
 <td>Common, simple object type</td>
@@ -212,21 +222,21 @@ Block</h2>
 <p><strong>q1: Stack size:</strong></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Block</th>
 <th>Concrete Value</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>b1 (empty)</td>
 <td>S = [] (new stack, no pushes)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>b2 (one element)</td>
 <td>S = [5] (push one Integer)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>b3 (more than one)</td>
 <td>S = [5, 10, 15] (push three Integers)</td>
 </tr>
@@ -235,17 +245,17 @@ Block</h2>
 <p><strong>q2: Nullness of X:</strong></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Block</th>
 <th>Concrete Value</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>b1 (null)</td>
 <td>X = null</td>
 </tr>
-<tr class="even">
+<tr>
 <td>b2 (non-null)</td>
 <td>X = 42</td>
 </tr>
@@ -254,25 +264,25 @@ Block</h2>
 <p><strong>q3: Type of X:</strong></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Block</th>
 <th>Concrete Value</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>b1 (Integer)</td>
 <td>X = 42</td>
 </tr>
-<tr class="even">
+<tr>
 <td>b2 (Double)</td>
 <td>X = 3.14</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>b3 (String)</td>
 <td>X = “hello”</td>
 </tr>
-<tr class="even">
+<tr>
 <td>b4 (Character)</td>
 <td>X = ‘A’</td>
 </tr>
@@ -287,16 +297,16 @@ tests</strong></p>
 element, push a non-null Integer</p>
 <table>
 <colgroup>
+<col style="width: 5%" />
+<col style="width: 10%" />
 <col style="width: 8%" />
-<col style="width: 5%" />
-<col style="width: 5%" />
-<col style="width: 7%" />
-<col style="width: 12%" />
-<col style="width: 22%" />
-<col style="width: 37%" />
+<col style="width: 11%" />
+<col style="width: 4%" />
+<col style="width: 32%" />
+<col style="width: 27%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Test</th>
 <th>q1</th>
 <th>q2</th>
@@ -307,7 +317,7 @@ element, push a non-null Integer</p>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>T1 (Base)</td>
 <td>b2 (one elem)</td>
 <td>b2 (non-null)</td>
@@ -316,7 +326,7 @@ element, push a non-null Integer</p>
 <td>Create stack; push(5); push(42)</td>
 <td>pop() → 42; pop() → 5; isEmpty() → true</td>
 </tr>
-<tr class="even">
+<tr>
 <td>T2</td>
 <td><strong>b1 (empty)</strong></td>
 <td>b2 (non-null)</td>
@@ -325,7 +335,7 @@ element, push a non-null Integer</p>
 <td>Create stack; push(42)</td>
 <td>pop() → 42; isEmpty() → true</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>T3</td>
 <td><strong>b3 (&gt;1 elem)</strong></td>
 <td>b2 (non-null)</td>
@@ -334,7 +344,7 @@ element, push a non-null Integer</p>
 <td>Create stack; push(5); push(10); push(15); push(42)</td>
 <td>pop() → 42; pop() → 15; isEmpty() → false</td>
 </tr>
-<tr class="even">
+<tr>
 <td>T4</td>
 <td>b2 (one elem)</td>
 <td><strong>b1 (null)</strong></td>
@@ -343,7 +353,7 @@ element, push a non-null Integer</p>
 <td>Create stack; push(5); push(null)</td>
 <td>pop() → null; pop() → 5; isEmpty() → true</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>T5</td>
 <td>b2 (one elem)</td>
 <td>b2 (non-null)</td>
@@ -352,7 +362,7 @@ element, push a non-null Integer</p>
 <td>Create stack; push(5); push(3.14)</td>
 <td>pop() → 3.14; pop() → 5; isEmpty() → true</td>
 </tr>
-<tr class="even">
+<tr>
 <td>T6</td>
 <td>b2 (one elem)</td>
 <td>b2 (non-null)</td>
@@ -361,7 +371,7 @@ element, push a non-null Integer</p>
 <td>Create stack; push(5); push(“hello”)</td>
 <td>pop() → “hello”; pop() → 5; isEmpty() → true</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>T7</td>
 <td>b2 (one elem)</td>
 <td>b2 (non-null)</td>
