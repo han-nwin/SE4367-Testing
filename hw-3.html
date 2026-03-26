@@ -6,9 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>hw-3</title>
   <style>
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -24,6 +21,70 @@
       vertical-align: middle;
     }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -49,20 +110,20 @@ Partitioning for GenericStack</h2>
 <col style="width: 74%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th>Variable</th>
 <th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td><strong>S</strong></td>
 <td>State variable</td>
 <td>The current state of the stack (its contents and number of
 elements)</td>
 </tr>
-<tr>
+<tr class="even">
 <td><strong>X</strong></td>
 <td>Input parameter</td>
 <td>The object passed to <code>push(Object X)</code></td>
@@ -84,316 +145,507 @@ initializes <strong>S</strong> to an empty stack.</li>
 the Input Variables</h2>
 <table>
 <colgroup>
-<col style="width: 40%" />
-<col style="width: 9%" />
-<col style="width: 50%" />
+<col style="width: 17%" />
+<col style="width: 31%" />
+<col style="width: 8%" />
+<col style="width: 42%" />
 </colgroup>
 <thead>
-<tr>
-<th>Characteristic</th>
+<tr class="header">
+<th>Characteristic ID</th>
+<th>Characteristic Name</th>
 <th>Variable</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>q1: Number of elements in the stack</td>
+<tr class="odd">
+<td>C1</td>
+<td>Stack is non-empty</td>
 <td>S</td>
-<td>How many elements the stack currently holds</td>
+<td>Whether the stack has at least one element</td>
 </tr>
-<tr>
-<td>q2: Nullness of X</td>
+<tr class="even">
+<td>C2</td>
+<td>Value is non-null</td>
 <td>X</td>
-<td>Whether the value pushed is null or not</td>
-</tr>
-<tr>
-<td>q3: Type of X</td>
-<td>X</td>
-<td>The runtime type of the object being pushed</td>
+<td>Whether the pushed/popped value is non-null</td>
 </tr>
 </tbody>
 </table>
 <h2 id="c-partition-characteristics-into-blocks">(c) Partition
 Characteristics into Blocks</h2>
-<p><strong>q1: Number of elements in the stack (S):</strong></p>
 <table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 42%" />
+<col style="width: 37%" />
+</colgroup>
 <thead>
-<tr>
-<th>Block</th>
-<th>Description</th>
+<tr class="header">
+<th>Characteristic</th>
+<th>Block T (true)</th>
+<th>Block F (false)</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>b1</td>
+<tr class="odd">
+<td>C1</td>
+<td>Stack has at least one element</td>
 <td>Stack is empty (size = 0)</td>
 </tr>
-<tr>
-<td>b2</td>
-<td>Stack has one element (size = 1)</td>
-</tr>
-<tr>
-<td>b3</td>
-<td>Stack has more than one element (size &gt; 1)</td>
+<tr class="even">
+<td>C2</td>
+<td>Value is non-null</td>
+<td>Value is null</td>
 </tr>
 </tbody>
 </table>
-<p><strong>q2: Nullness of X:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Block</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>b1</td>
-<td>X is null</td>
-</tr>
-<tr>
-<td>b2</td>
-<td>X is non-null</td>
-</tr>
-</tbody>
-</table>
-<p><strong>q3: Type of X:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Block</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>b1</td>
-<td>X is an Integer</td>
-</tr>
-<tr>
-<td>b2</td>
-<td>X is a Double</td>
-</tr>
-<tr>
-<td>b3</td>
-<td>X is a String</td>
-</tr>
-<tr>
-<td>b4</td>
-<td>X is a Character</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Base block for each characteristic:</strong> T (true)</p>
 <h2 id="d-designate-base-blocks">(d) Designate Base Blocks</h2>
 <table>
 <colgroup>
-<col style="width: 19%" />
-<col style="width: 21%" />
-<col style="width: 59%" />
+<col style="width: 31%" />
+<col style="width: 15%" />
+<col style="width: 52%" />
 </colgroup>
 <thead>
-<tr>
+<tr class="header">
 <th>Characteristic</th>
 <th>Base Block</th>
 <th>Rationale</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>q1 (Stack size)</td>
-<td><strong>b2</strong> (one element)</td>
-<td>Most typical usage, stack has some content but is simple</td>
+<tr class="odd">
+<td>C1 (Stack is non-empty)</td>
+<td><strong>T</strong></td>
+<td>Most typical usage, stack has content</td>
 </tr>
-<tr>
-<td>q2 (Nullness of X)</td>
-<td><strong>b2</strong> (non-null)</td>
+<tr class="even">
+<td>C2 (Value is non-null)</td>
+<td><strong>T</strong></td>
 <td>Normal, expected input</td>
 </tr>
-<tr>
-<td>q3 (Type of X)</td>
-<td><strong>b1</strong> (Integer)</td>
-<td>Common, simple object type</td>
-</tr>
 </tbody>
 </table>
-<p><strong>Base choice:</strong> (q1=b2, q2=b2, q3=b1)</p>
 <h2 id="e-define-values-for-each-block">(e) Define Values for Each
 Block</h2>
-<p><strong>q1: Stack size:</strong></p>
 <table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 7%" />
+<col style="width: 71%" />
+</colgroup>
 <thead>
-<tr>
+<tr class="header">
+<th>Characteristic</th>
 <th>Block</th>
 <th>Concrete Value</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>b1 (empty)</td>
+<tr class="odd">
+<td>C1</td>
+<td>T</td>
+<td>S = [5] (push one Integer before test action)</td>
+</tr>
+<tr class="even">
+<td>C1</td>
+<td>F</td>
 <td>S = [] (new stack, no pushes)</td>
 </tr>
-<tr>
-<td>b2 (one element)</td>
-<td>S = [5] (push one Integer)</td>
+<tr class="odd">
+<td>C2</td>
+<td>T</td>
+<td>X = 42 (non-null Integer)</td>
 </tr>
-<tr>
-<td>b3 (more than one)</td>
-<td>S = [5, 10, 15] (push three Integers)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>q2: Nullness of X:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Block</th>
-<th>Concrete Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>b1 (null)</td>
+<tr class="even">
+<td>C2</td>
+<td>F</td>
 <td>X = null</td>
-</tr>
-<tr>
-<td>b2 (non-null)</td>
-<td>X = 42</td>
-</tr>
-</tbody>
-</table>
-<p><strong>q3: Type of X:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Block</th>
-<th>Concrete Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>b1 (Integer)</td>
-<td>X = 42</td>
-</tr>
-<tr>
-<td>b2 (Double)</td>
-<td>X = 3.14</td>
-</tr>
-<tr>
-<td>b3 (String)</td>
-<td>X = “hello”</td>
-</tr>
-<tr>
-<td>b4 (Character)</td>
-<td>X = ‘A’</td>
 </tr>
 </tbody>
 </table>
 <h2 id="f-base-choice-coverage-bcc-test-set">(f) Base Choice Coverage
 (BCC) Test Set</h2>
-<p>Formula: Number of tests = 1 + sum of (Bi - 1) for each
-characteristic = 1 + (3-1) + (2-1) + (4-1) = <strong>7
-tests</strong></p>
-<p><strong>Base test:</strong> q1=b2, q2=b2, q3=b1 → Stack has one
-element, push a non-null Integer</p>
+<h3 id="step-1-abstract-model">Step 1: Abstract Model</h3>
 <table>
 <colgroup>
-<col style="width: 5%" />
-<col style="width: 10%" />
-<col style="width: 8%" />
+<col style="width: 16%" />
 <col style="width: 11%" />
-<col style="width: 4%" />
-<col style="width: 32%" />
-<col style="width: 27%" />
+<col style="width: 15%" />
+<col style="width: 19%" />
+<col style="width: 22%" />
+<col style="width: 17%" />
 </colgroup>
 <thead>
-<tr>
-<th>Test</th>
-<th>q1</th>
-<th>q2</th>
-<th>q3</th>
-<th>Changed</th>
-<th>Setup &amp; Actions</th>
-<th>Oracle (Expected Result)</th>
+<tr class="header">
+<th>Method name</th>
+<th>Return type</th>
+<th>Possible values</th>
+<th>Exception</th>
+<th>Characteristic Name</th>
+<th>Characteristic ID</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>T1 (Base)</td>
-<td>b2 (one elem)</td>
-<td>b2 (non-null)</td>
-<td>b1 (Integer)</td>
+<tr class="odd">
+<td>GenericStack()</td>
 <td>—</td>
-<td>Create stack; push(5); push(42)</td>
-<td>pop() → 42; pop() → 5; isEmpty() → true</td>
+<td>—</td>
+<td></td>
+<td>—</td>
+<td>—</td>
 </tr>
-<tr>
-<td>T2</td>
-<td><strong>b1 (empty)</strong></td>
-<td>b2 (non-null)</td>
-<td>b1 (Integer)</td>
-<td>q1</td>
-<td>Create stack; push(42)</td>
-<td>pop() → 42; isEmpty() → true</td>
+<tr class="even">
+<td>push(Object X)</td>
+<td>void</td>
+<td>—</td>
+<td></td>
+<td>stack is non-empty</td>
+<td>C1</td>
 </tr>
-<tr>
-<td>T3</td>
-<td><strong>b3 (&gt;1 elem)</strong></td>
-<td>b2 (non-null)</td>
-<td>b1 (Integer)</td>
-<td>q1</td>
-<td>Create stack; push(5); push(10); push(15); push(42)</td>
-<td>pop() → 42; pop() → 15; isEmpty() → false</td>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>X is non-null</td>
+<td>C2</td>
 </tr>
-<tr>
-<td>T4</td>
-<td>b2 (one elem)</td>
-<td><strong>b1 (null)</strong></td>
-<td>b1 (Integer)</td>
-<td>q2</td>
-<td>Create stack; push(5); push(null)</td>
-<td>pop() → null; pop() → 5; isEmpty() → true</td>
+<tr class="even">
+<td>pop()</td>
+<td>Object E</td>
+<td>E, null</td>
+<td>EmptyStackException</td>
+<td>stack is non-empty</td>
+<td>C1</td>
 </tr>
-<tr>
-<td>T5</td>
-<td>b2 (one elem)</td>
-<td>b2 (non-null)</td>
-<td><strong>b2 (Double)</strong></td>
-<td>q3</td>
-<td>Create stack; push(5); push(3.14)</td>
-<td>pop() → 3.14; pop() → 5; isEmpty() → true</td>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>return value is non-null</td>
+<td>C2</td>
 </tr>
-<tr>
-<td>T6</td>
-<td>b2 (one elem)</td>
-<td>b2 (non-null)</td>
-<td><strong>b3 (String)</strong></td>
-<td>q3</td>
-<td>Create stack; push(5); push(“hello”)</td>
-<td>pop() → “hello”; pop() → 5; isEmpty() → true</td>
-</tr>
-<tr>
-<td>T7</td>
-<td>b2 (one elem)</td>
-<td>b2 (non-null)</td>
-<td><strong>b4 (Character)</strong></td>
-<td>q3</td>
-<td>Create stack; push(5); push(‘A’)</td>
-<td>pop() → ‘A’; pop() → 5; isEmpty() → true</td>
+<tr class="even">
+<td>isEmpty()</td>
+<td>boolean</td>
+<td>true, false</td>
+<td></td>
+<td>stack is non-empty</td>
+<td>C1</td>
 </tr>
 </tbody>
 </table>
-<h3 id="oracle-rationale">Oracle Rationale</h3>
-<ul>
-<li><strong>LIFO order</strong>: <code>pop()</code> must always return
-the most recently pushed element.</li>
-<li><strong>isEmpty()</strong>: Returns <code>true</code> only when the
-stack has zero elements; <code>false</code> otherwise.</li>
-<li><strong>Constructor</strong>: <code>new GenericStack()</code>
-creates an empty stack, so <code>isEmpty()</code> → <code>true</code>
-immediately after construction.</li>
-<li>Each test verifies correct behavior by checking return values of
-<code>pop()</code> and <code>isEmpty()</code> against expected LIFO
-semantics.</li>
-</ul>
+<h3 id="step-2-bcc-tables">Step 2: BCC Tables</h3>
+<p><strong>push(Object X):</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>C1</th>
+<th>C2</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T</td>
+<td>T</td>
+<td>base case</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td>T</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>T</td>
+<td>F</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>pop():</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>C1</th>
+<th>C2</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T</td>
+<td>T</td>
+<td>base case</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td>T</td>
+<td>infeasible (empty stack throws)</td>
+</tr>
+<tr class="odd">
+<td>T</td>
+<td>F</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Revised:</p>
+<table>
+<thead>
+<tr class="header">
+<th>C1</th>
+<th>C2</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T</td>
+<td>T</td>
+<td>base case</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td>F</td>
+<td>revised (empty stack → exception)</td>
+</tr>
+<tr class="odd">
+<td>T</td>
+<td>F</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>isEmpty():</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>C1</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T</td>
+<td>base case</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="step-3-abstract-test-requirements">Step 3: Abstract Test
+Requirements</h3>
+<p><strong>push(Object X):</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>C1</th>
+<th>C2</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T2 (Base)</td>
+<td>T</td>
+<td>T</td>
+<td>base case</td>
+</tr>
+<tr class="even">
+<td>T3</td>
+<td>F</td>
+<td>T</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>T4</td>
+<td>T</td>
+<td>F</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>pop():</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>C1</th>
+<th>C2</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T5 (Base)</td>
+<td>T</td>
+<td>T</td>
+<td>base case</td>
+</tr>
+<tr class="even">
+<td>T6</td>
+<td>F</td>
+<td>T</td>
+<td>infeasible (empty stack throws)</td>
+</tr>
+<tr class="odd">
+<td>T7</td>
+<td>T</td>
+<td>F</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Revised:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>C1</th>
+<th>C2</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T5 (Base)</td>
+<td>T</td>
+<td>T</td>
+<td>base case</td>
+</tr>
+<tr class="even">
+<td>T6</td>
+<td>F</td>
+<td>F</td>
+<td>revised (empty stack → exception)</td>
+</tr>
+<tr class="odd">
+<td>T7</td>
+<td>T</td>
+<td>F</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>isEmpty():</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>C1</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T8 (Base)</td>
+<td>T</td>
+<td>base case</td>
+</tr>
+<tr class="even">
+<td>T9</td>
+<td>F</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="step-4-concrete-tests">Step 4: Concrete Tests</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">static</span><span class="im"> org</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">Assert</span><span class="op">.</span><span class="im">assertEquals</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">static</span><span class="im"> org</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">Assert</span><span class="op">.</span><span class="im">assertFalse</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">static</span><span class="im"> org</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">Assert</span><span class="op">.</span><span class="im">assertNull</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="kw">static</span><span class="im"> org</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">Assert</span><span class="op">.</span><span class="im">assertTrue</span><span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">Before</span><span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">org</span><span class="op">.</span><span class="im">junit</span><span class="op">.</span><span class="im">Test</span><span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">java</span><span class="op">.</span><span class="im">util</span><span class="op">.</span><span class="im">EmptyStackException</span><span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> GenericStackTest <span class="op">{</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> GenericStack stack<span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Before</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">setUp</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        stack <span class="op">=</span> <span class="kw">new</span> <span class="fu">GenericStack</span><span class="op">();</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T1: constructor</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">test_constructor</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertTrue</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">isEmpty</span><span class="op">());</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T2: push() base case: [C1, C2] = [T, T]</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">test_push_base</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="dv">5</span><span class="op">);</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="dv">42</span><span class="op">);</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertEquals</span><span class="op">(</span><span class="dv">42</span><span class="op">,</span> stack<span class="op">.</span><span class="fu">pop</span><span class="op">());</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertEquals</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> stack<span class="op">.</span><span class="fu">pop</span><span class="op">());</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertTrue</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">isEmpty</span><span class="op">());</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T3: push() [C1, C2] = [F, T]</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">test_push_C1</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>        stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="dv">42</span><span class="op">);</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertEquals</span><span class="op">(</span><span class="dv">42</span><span class="op">,</span> stack<span class="op">.</span><span class="fu">pop</span><span class="op">());</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertTrue</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">isEmpty</span><span class="op">());</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T4: push() [C1, C2] = [T, F]</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">test_push_C2</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>        stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="dv">5</span><span class="op">);</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>        stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertNull</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">pop</span><span class="op">());</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertEquals</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> stack<span class="op">.</span><span class="fu">pop</span><span class="op">());</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertTrue</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">isEmpty</span><span class="op">());</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T5: pop() base case: [C1, C2] = [T, T]</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">test_pop_base</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>        stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="dv">5</span><span class="op">);</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertEquals</span><span class="op">(</span><span class="dv">5</span><span class="op">,</span> stack<span class="op">.</span><span class="fu">pop</span><span class="op">());</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertTrue</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">isEmpty</span><span class="op">());</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T6: pop() (revised from [F, T]): [C1, C2] = [F, F]</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span><span class="op">(</span>expected <span class="op">=</span> <span class="bu">EmptyStackException</span><span class="op">.</span><span class="fu">class</span><span class="op">)</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">test_pop_C1</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>        stack<span class="op">.</span><span class="fu">pop</span><span class="op">();</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T7: pop() [C1, C2] = [T, F]</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">test_pop_C2</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>        stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="kw">null</span><span class="op">);</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertNull</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">pop</span><span class="op">());</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertTrue</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">isEmpty</span><span class="op">());</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T8: isEmpty() base case: [C1] = [T]</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">test_isEmpty_base</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>        stack<span class="op">.</span><span class="fu">push</span><span class="op">(</span><span class="dv">5</span><span class="op">);</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertFalse</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">isEmpty</span><span class="op">());</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>    <span class="co">// T9: isEmpty() [C1] = [F]</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">@Test</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">test_isEmpty_C1</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>        <span class="fu">assertTrue</span><span class="op">(</span>stack<span class="op">.</span><span class="fu">isEmpty</span><span class="op">());</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </body>
 </html>
