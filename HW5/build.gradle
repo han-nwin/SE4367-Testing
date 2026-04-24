@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['.']
+            exclude '**/*Test*.java'
+            exclude 'build/**'
+            exclude '.gradle/**'
+        }
+    }
+    test {
+        java {
+            srcDirs = ['.']
+            include '**/*Test*.java'
+            exclude 'build/**'
+            exclude '.gradle/**'
+        }
+    }
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
