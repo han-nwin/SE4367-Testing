@@ -491,9 +491,42 @@ B 22 06.27.1     (date format wrong)</pre>
 
 
 <div class="box trap">
+  <h2>Last-Year Exam Recall (T/F)</h2>
+  <div class="body">
+    <ul class="tight">
+      <li><b>F</b> Validation ≠ checking current-phase output vs previous-phase (that's <em>verification</em>); validation = meets <b>user needs</b>.</li>
+      <li><b>T</b> Customers must read &amp; understand user stories.</li>
+      <li><b>T</b> Test automation reduces <b>distribution cost</b>.</li>
+      <li><b>T</b> A user story = a requirement.</li>
+      <li><b>F</b> Criteria-based produces <em>more</em> tests than human-based (often fewer, but systematic).</li>
+      <li><b>F</b> Agile relies on upfront modeling (it's iterative).</li>
+      <li><b>F</b> Stories say <em>how</em> — they say the <b>what</b>, not the how.</li>
+      <li><b>F</b> Every test reaching a fault → failure. Need <b>RIPR</b> (Reach, Infect, Propagate, Reveal).</li>
+      <li><b>T</b> <b>PPC subsumes All-DU-Paths</b>.</li>
+      <li><b>F</b> "Code-for-change" + aggressive optimization align (they oppose).</li>
+      <li><b>F</b> Acceptance tests should be automated ASAP (customer approves first).</li>
+      <li><b>—</b> Exception tests use <code>try/catch</code> or <code>@Test(expected)</code>, no assertion.</li>
+      <li><b>—</b> XML uses <b>more space</b> than binary/JSON (verbose tags).</li>
+    </ul>
+  </div>
+</div>
+
+<div class="box trap">
+  <h2>Last-Year Exam — Worked: <code>a → (b → c)</code></h2>
+  <div class="body">
+    <p>When does <b>a determine P</b>? Use XOR method:</p>
+    <pre>P = !a ∨ !b ∨ c
+p_a(T)= F∨(!b∨c) = (!b∨c)
+p_a(F)= T∨…     = T
+det: (!b∨c) ⊕ T = T  ⇒  ¬(!b∨c) = T  ⇒  b ∧ ¬c</pre>
+    <p><b>⇒ a determines P when b=T, c=F.</b></p>
+  </div>
+</div>
+
+<div class="box trap">
   <h2>Final Cross-Chapter Cheat</h2>
   <div class="body">
-    <p><b>Bridges:</b> PDC≡EC, TSC≡NC. <b>CACC≡MC/DC</b> (FAA). <b>CoC=2<sup>n</sup></b>, ACoC=∏|B<sub>i</sub>|, PWC=product of 2 largest. Subsumption ≠ better fault detection. Infeasibility is <b>undecidable</b>. Three structural barriers: <b>reachability, infeasibility, controllability</b>.</p>
+    <p>PDC≡EC · TSC≡NC · CACC≡MC/DC · CoC=2<sup>n</sup> · ACoC=∏|B<sub>i</sub>| · PWC=2-largest · PPC⊃All-DU. Subsumption ≠ fault-detection. Infeasibility undecidable. <b>RIPR</b>; barriers: <b>reach·infeas·control</b>.</p>
   </div>
 </div>
 
