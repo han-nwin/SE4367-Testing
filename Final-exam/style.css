@@ -1,0 +1,130 @@
+@page {
+  size: A4;
+  margin: 4mm 4mm 4mm 4mm;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 7.1pt;
+  line-height: 1.18;
+  color: #111;
+}
+
+.sheet {
+  column-count: 3;
+  column-gap: 5px;
+  column-fill: balance;
+}
+
+.box {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  border: 0.5pt solid #888;
+  border-radius: 3pt;
+  margin: 0 0 2pt 0;
+  background: #fff;
+  overflow: hidden;
+}
+
+h1.title {
+  column-span: all;
+  font-size: 10pt;
+  margin: 0 0 4pt 0;
+  text-align: center;
+  border-bottom: 1pt solid #222;
+  padding-bottom: 1.5pt;
+}
+
+.box h2 {
+  font-size: 7.9pt;
+  margin: 0;
+  padding: 1.8pt 4pt;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.2pt;
+}
+
+.box .body {
+  padding: 3pt 4pt;
+}
+
+.box h3 {
+  font-size: 7.4pt;
+  margin: 3pt 0 1.5pt 0;
+  color: #222;
+  border-bottom: 0.4pt dotted #888;
+}
+
+/* color themes */
+.ch8  h2 { background: #b03a2e; }   /* deep red — main focus */
+.ch8b h2 { background: #c0392b; }
+.ch8c h2 { background: #d35400; }   /* orange variant */
+.ch9  h2 { background: #1f7a4d; }   /* green */
+.old  h2 { background: #5d6d7e; }   /* slate gray */
+.tip  h2 { background: #6c3483; }   /* purple highlight */
+.trap h2 { background: #1a5276; }   /* navy */
+
+p, ul, ol { margin: 1.5pt 0; padding: 0; }
+ul, ol { padding-left: 11pt; }
+li { margin: 0.3pt 0; }
+
+code, .mono {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 6.7pt;
+  background: #f3f3f3;
+  padding: 0 1.5pt;
+  border-radius: 2pt;
+}
+
+.box h2 code {
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  padding: 0 2pt;
+}
+
+pre {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 6.5pt;
+  background: #f3f3f3;
+  border: 0.4pt solid #ddd;
+  border-radius: 2pt;
+  padding: 1.5pt 2.5pt;
+  margin: 1.5pt 0;
+  white-space: pre-wrap;
+  line-height: 1.15;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5pt 0;
+  font-size: 6.7pt;
+}
+th, td {
+  border: 0.4pt solid #aaa;
+  padding: 0.8pt 2pt;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #efefef;
+  font-weight: 700;
+}
+
+.kv td:first-child { font-weight: 600; width: 38%; }
+
+.note { background: #fff8d8; padding: 2pt 4pt; border-left: 2pt solid #d4a72c; margin: 2pt 0; }
+.warn { background: #ffe6e6; padding: 2pt 4pt; border-left: 2pt solid #c0392b; margin: 2pt 0; }
+.good { background: #e6f5ec; padding: 2pt 4pt; border-left: 2pt solid #1f7a4d; margin: 2pt 0; }
+
+.tight li { margin: 0; }
+b, strong { color: #000; }
+.k { color: #b03a2e; font-weight: 700; }
+.f { color: #1a5276; font-weight: 700; }
+.muted { color: #555; }
+
+hr.sep { border: 0; border-top: 0.4pt dashed #aaa; margin: 3pt 0; }

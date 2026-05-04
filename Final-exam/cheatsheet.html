@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Software Testing Cheatsheet — Ch 8, 9 (+ Ch 5/6/7 Refresh)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1 class="title">Software Testing Final Cheatsheet — Ch 8 (Logic), Ch 9 (Syntax) + Ch 5/6/7 Refresh</h1>
+
+<div class="sheet">
+
+<!-- =================== CH 8 — LOGIC COVERAGE =================== -->
+
+<div class="box ch8">
+  <h2>Ch 8 — Core Definitions (MUST KNOW)</h2>
+  <div class="body">
+    <table class="kv">
+      <tr><td>Predicate (P)</td><td>Boolean expression → T/F. Built from variables, comparisons, boolean fns, logical ops.</td></tr>
+      <tr><td>Clause (c)</td><td>Single atomic boolean condition (no AND/OR inside). E.g. <code>P=(a&amp;&amp;(b||c))</code> → clauses <code>a,b,c</code>.</td></tr>
+      <tr><td>Major clause</td><td>The clause currently being tested.</td></tr>
+      <tr><td>Minor clauses</td><td>All other clauses in P.</td></tr>
+      <tr><td>Determination</td><td>Clause c<sub>i</sub> <b>determines</b> P if changing c<sub>i</sub> (others fixed) changes P.</td></tr>
+    </table>
+    <div class="note"><b>Real-world fact:</b> 88.5% of predicates have 1 clause, 9.5% have 2, very few ≥3 — but the logic is still tricky.</div>
+    <div class="note"><b>Determine ≠ flip P.</b> "Determines" = c<sub>i</sub> has effect on P's outcome under current minors.</div>
+  </div>
+</div>
+
+<div class="box ch8">
+  <h2>Ch 8 — Basic Coverage (PC, CC, CoC)</h2>
+  <div class="body">
+    <table>
+      <tr><th>Crit</th><th>Requirement</th></tr>
+      <tr><td><b>PC</b></td><td>Each predicate P must be T at least once and F at least once.</td></tr>
+      <tr><td><b>CC</b></td><td>Each clause c must be T at least once and F at least once.</td></tr>
+      <tr><td><b>CoC</b></td><td>Test <b>every</b> combination of clause T/F values.</td></tr>
+    </table>
+    <p><b>CoC formula:</b> n clauses → <b>2<sup>n</sup></b> tests. Strongest, but exponential — impractical at n≥4.</p>
+    <div class="warn"><b>Trap:</b> CC ⇏ PC and PC ⇏ CC. CC may be satisfied while P is always T (one clause dominates via short-circuit).</div>
+    <p class="muted"><b>PC weakness:</b> may ignore clauses (short-circuit, one clause dominates).</p>
+    <p class="muted"><b>CC weakness:</b> doesn't guarantee P ever changes value.</p>
+  </div>
+</div>
+
+<div class="box ch8">
+  <h2>Ch 8 — Active Clause Coverage (ACC) — THE CORE</h2>
+  <div class="body">
+    <p><b>Idea:</b> for each clause c, build tests where c <em>determines</em> P, then flip c (T then F).</p>
+    <p><b>Algorithm (per clause):</b></p>
+    <ol class="tight">
+      <li>Pick c as <b>major</b>; the rest are minors.</li>
+      <li>Fix minors so that c <b>determines</b> P.</li>
+      <li>Make 2 tests: one with c=T, one with c=F.</li>
+      <li>Verify only c flips between the two tests (and that P responds per the variant).</li>
+    </ol>
+    <table>
+      <tr><th>Variant</th><th>Minors across the 2 rows</th><th>P must flip?</th></tr>
+      <tr><td><b>GACC</b></td><td>can differ</td><td>NO</td></tr>
+      <tr><td><b>CACC</b> ★</td><td>can differ</td><td>YES</td></tr>
+      <tr><td><b>RACC</b></td><td>must be identical</td><td>YES (auto)</td></tr>
+    </table>
+    <p><b>Strictness:</b> PC &lt; CC &lt; GACC &lt; CACC &lt; RACC. <b>RACC ≈ MC/DC</b> (FAA DO-178B/C).</p>
+    <div class="good"><b>Exam default:</b> when asked "which coverage?" → <b>CACC</b> (best strength/feasibility tradeoff, subsumes PC).</div>
+    <div class="warn"><b>RACC may be infeasible</b> — if no two rows exist with identical minors that flip P, RACC is impossible; fall back to CACC.</div>
+  </div>
+</div>
+
+<div class="box ch8b">
+  <h2>Ch 8 — Make a Clause Determine P (3 methods)</h2>
+  <div class="body">
+    <p><b>1. Logical reasoning:</b> AND chain → other clauses = T; OR chain → other clauses = F.</p>
+    <p><b>2. Definitional (XOR):</b> <code>p_c = p(c=T) ⊕ p(c=F)</code>; solve <code>p_c=T</code> for the exact minor condition.</p>
+    <p><b>3. Truth table:</b> find 2 rows where <em>only</em> c<sub>i</sub> changes AND P changes.</p>
+  </div>
+</div>
+
+<div class="box ch8b">
+  <h2>Ch 8 — Worked Pattern: <code>P = a ∧ (b ∨ c)</code></h2>
+  <div class="body">
+    <p><b>Determining conditions:</b></p>
+    <ul class="tight">
+      <li>a active when <code>b∨c = T</code></li>
+      <li>b active when <code>a = T, c = F</code></li>
+      <li>c active when <code>a = T, b = F</code></li>
+    </ul>
+    <p><b>Sample CACC test set (2 tests/clause = 6 max, often dedupable):</b></p>
+    <table>
+      <tr><th>#</th><th>a</th><th>b</th><th>c</th><th>P</th><th>covers</th></tr>
+      <tr><td>1</td><td>T</td><td>T</td><td>F</td><td>T</td><td>a=T, b=T</td></tr>
+      <tr><td>2</td><td>F</td><td>T</td><td>F</td><td>F</td><td>a=F</td></tr>
+      <tr><td>3</td><td>T</td><td>F</td><td>F</td><td>F</td><td>b=F (and c=F)</td></tr>
+      <tr><td>4</td><td>T</td><td>F</td><td>T</td><td>T</td><td>c=T</td></tr>
+    </table>
+    <p class="muted">Thermostat <code>(a∨(b∧c))∧d</code>: CACC needs <b>6 tests</b> (vs 16 for CoC).</p>
+  </div>
+</div>
+
+<div class="box ch8b">
+  <h2>Ch 8 — 2-clause Quick Reference</h2>
+  <div class="body">
+    <p><b><code>a ∧ b</code></b>: a det when b=T; b det when a=T. CACC pairs a:(TT,FT), b:(TT,TF). RACC = CACC.</p>
+    <p><b><code>a ∨ b</code></b>: a det when b=F; b det when a=F. CACC a:(TF,FF), b:(FT,FF).</p>
+    <p><b><code>a ⊕ b</code></b>: every clause <em>always</em> determines. CACC/RACC for a:(TT,FT)+(TF,FF) (4 GACC pairs total: any row pair where a flips).</p>
+    <div class="note"><b>Pattern:</b> AND → minors all T; OR → minors all F; XOR → minors irrelevant.</div>
+  </div>
+</div>
+
+<div class="box ch8b">
+  <h2>Ch 8 — Worked: <code>P = a ∧ (¬b ∨ c)</code></h2>
+  <div class="body">
+    <table>
+      <tr><th>#</th><th>a</th><th>b</th><th>c</th><th>¬b∨c</th><th>P</th></tr>
+      <tr><td>1</td><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr><td>2</td><td>T</td><td>T</td><td>F</td><td>F</td><td>F</td></tr>
+      <tr><td>3</td><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr><td>4</td><td>T</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>
+      <tr><td>5</td><td>F</td><td>T</td><td>T</td><td>T</td><td>F</td></tr>
+      <tr><td>6</td><td>F</td><td>T</td><td>F</td><td>F</td><td>F</td></tr>
+      <tr><td>7</td><td>F</td><td>F</td><td>T</td><td>T</td><td>F</td></tr>
+      <tr><td>8</td><td>F</td><td>F</td><td>F</td><td>T</td><td>F</td></tr>
+    </table>
+    <ul class="tight">
+      <li>a det when (¬b∨c)=T → rows {1,3,4,5,7,8}</li>
+      <li>b det when a=T ∧ c=F → rows {2,4}</li>
+      <li>c det when a=T ∧ b=T → rows {1,2}</li>
+    </ul>
+    <p><b>RACC pairs (minors equal):</b> a:(1,5),(3,7),(4,8); b:(2,4); c:(1,2)</p>
+  </div>
+</div>
+
+<div class="box ch8b">
+  <h2>Ch 8 — Implication: <code>P = a → (b → c)</code></h2>
+  <div class="body">
+    <p>Rewrite: <code>a → (b → c) = ¬a ∨ ¬b ∨ c</code>. P is FALSE only when <code>a=T, b=T, c=F</code>.</p>
+    <table>
+      <tr><th>#</th><th>a</th><th>b</th><th>c</th><th>b→c</th><th>P</th></tr>
+      <tr><td>1</td><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr><td>2</td><td>T</td><td>T</td><td>F</td><td>F</td><td>F</td></tr>
+      <tr><td>3</td><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr><td>4</td><td>T</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>
+      <tr><td>5</td><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr><td>6</td><td>F</td><td>T</td><td>F</td><td>F</td><td>T</td></tr>
+      <tr><td>7</td><td>F</td><td>F</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr><td>8</td><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>
+    </table>
+    <ul class="tight">
+      <li>a det when <code>b=T ∧ c=F</code> → rows {2, 6}</li>
+      <li>b det when <code>a=T ∧ c=F</code> → rows {2, 4}</li>
+      <li>c det when <code>a=T ∧ b=T</code> → rows {1, 2}</li>
+    </ul>
+    <p><b>GACC = CACC pairs:</b> a:(2,6); b:(2,4); c:(1,2).</p>
+    <p><b>RACC:</b> a:(2,6); b:(2,4); c:<b>infeasible</b> (no row pair has identical minors AND flips P for c).</p>
+    <div class="warn"><b>Trap:</b> only 1 FALSE row → some clauses cannot meet RACC. Document infeasibility, fall back to CACC.</div>
+  </div>
+</div>
+
+<div class="box ch8b">
+  <h2>Ch 8 — Majority (classic exam) <code>P=(a∧b)∨(b∧c)∨(a∧c)</code></h2>
+  <div class="body">
+    <p>P = T iff at least 2 of {a,b,c} are T. By symmetry, all 3 clauses behave the same.</p>
+    <table>
+      <tr><th>#</th><th>a</th><th>b</th><th>c</th><th>P</th></tr>
+      <tr><td>1</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr><td>2</td><td>T</td><td>T</td><td>F</td><td>T</td></tr>
+      <tr><td>3</td><td>T</td><td>F</td><td>T</td><td>T</td></tr>
+      <tr><td>4</td><td>T</td><td>F</td><td>F</td><td>F</td></tr>
+      <tr><td>5</td><td>F</td><td>T</td><td>T</td><td>T</td></tr>
+      <tr><td>6</td><td>F</td><td>T</td><td>F</td><td>F</td></tr>
+      <tr><td>7</td><td>F</td><td>F</td><td>T</td><td>F</td></tr>
+      <tr><td>8</td><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+    </table>
+    <p>Each clause determines P when the other two <em>disagree</em> (one T, one F).</p>
+    <ul class="tight">
+      <li>a det (b≠c): rows {2,3,6,7}; CACC pairs (2,6)(3,7)</li>
+      <li>b det (a≠c): rows {2,4,5,7}; CACC pairs (2,4)(5,7)</li>
+      <li>c det (a≠b): rows {3,4,5,6}; CACC pairs (3,4)(5,6)</li>
+    </ul>
+    <p class="muted"><b>RACC = CACC here</b> (minors auto-match in the chosen pairs).</p>
+  </div>
+</div>
+
+<div class="box ch8b">
+  <h2>Ch 8 — Code → Predicates (twoPred-style)</h2>
+  <div class="body">
+    <pre>1 boolean z;
+2 if (x &lt; y)
+3   z = true;
+4 else
+5   z = false;
+6 if (z &amp;&amp; x+y == 10)
+7   return "A";
+8 else
+9   return "B";</pre>
+    <p><b>Predicates:</b> p1 (line 2) = <code>x&lt;y</code>; p2 (line 6) = <code>z ∧ (x+y==10)</code>.</p>
+    <p><b>p1 single clause</b> → CACC = CC = PC. Need (x&lt;y)=T and =F.</p>
+    <p><b>p2:</b> a=z determines when (x+y==10)=T; b=(x+y==10) determines when z=T.</p>
+    <p><b>CACC test set (3 tests):</b></p>
+    <table>
+      <tr><th>T</th><th>x</th><th>y</th><th>p1</th><th>z</th><th>x+y=10</th><th>p2</th><th>ret</th></tr>
+      <tr><td>T1</td><td>1</td><td>9</td><td>T</td><td>T</td><td>T</td><td>T</td><td>"A"</td></tr>
+      <tr><td>T2</td><td>5</td><td>5</td><td>F</td><td>F</td><td>T</td><td>F</td><td>"B"</td></tr>
+      <tr><td>T3</td><td>1</td><td>2</td><td>T</td><td>T</td><td>F</td><td>F</td><td>"B"</td></tr>
+    </table>
+    <p class="muted">Watch <b>controllability</b>: z is computed; pick x,y to drive both z and x+y=10.</p>
+  </div>
+</div>
+
+<div class="box ch8c">
+  <h2>Ch 8 — Inactive Clause Coverage (ICC)</h2>
+  <div class="body">
+    <p><b>Opposite of ACC:</b> minors fixed so that c does <b>not</b> affect P. Tests c's <em>independence</em>.</p>
+    <p><b>4 tests per clause:</b> (c=T,P=T), (c=F,P=T), (c=T,P=F), (c=F,P=F).</p>
+    <p><b>Variants:</b> GICC (minors can change), RICC (minors fixed).</p>
+  </div>
+</div>
+
+<div class="box ch8c">
+  <h2>Ch 8 — Subsumption Hierarchy</h2>
+  <div class="body">
+    <pre>      CoC
+       ↑
+   RACC / RICC
+       ↑
+      CACC
+       ↑
+   GACC / GICC
+       ↑
+     CC , PC</pre>
+    <p>Stronger satisfies weaker automatically.</p>
+    <table>
+      <tr><th>Implication</th><th>Holds?</th></tr>
+      <tr><td>CACC → PC</td><td>✓ TRUE</td></tr>
+      <tr><td>GACC → PC</td><td>✗ FALSE</td></tr>
+      <tr><td>CC → PC</td><td>✗ FALSE</td></tr>
+      <tr><td>PC → CC</td><td>✗ FALSE</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="box ch8c">
+  <h2>Ch 8 — Source-Code Challenges (Ch 8.3)</h2>
+  <div class="body">
+    <p><b>Two practical problems:</b></p>
+    <p><b>1. Reachability:</b> inputs must drive execution to the predicate's line. E.g. <code>if ((a||(b&amp;&amp;c))&amp;&amp;d)</code> — you must reach this <code>if</code>.</p>
+    <p><b>2. Controllability:</b> clause values come from program state, not inputs directly. E.g. <code>dTemp = pSet.getSetting(period,day,settings)</code> — you must configure period/day/settings to force a clause T/F.</p>
+    <div class="warn"><b>Infeasible test cases</b> exist (e.g. <code>a&gt;b ∧ b&gt;c ∧ c&gt;a</code>). Detecting infeasibility is <b>undecidable</b> → identify and ignore.</div>
+  </div>
+</div>
+
+<div class="box trap">
+  <h2>Ch 8 — Exam Traps & Memory Hooks</h2>
+  <div class="body">
+    <ul class="tight">
+      <li>"<b>Determines</b>" ≠ "flips P". GACC only requires determination; CACC requires P to also flip.</li>
+      <li>Minor clauses may differ in GACC/CACC; only RACC forces them equal.</li>
+      <li>RACC ≈ MC/DC. CACC subsumes PC; GACC does <b>not</b>.</li>
+      <li>CC ⇏ PC and PC ⇏ CC — independent.</li>
+      <li>CoC = 2<sup>n</sup>, exponential. Single-clause predicate → PC=CC=GACC=CACC=RACC.</li>
+      <li>For XOR / parity, every clause always determines P.</li>
+      <li>RACC can be <b>infeasible</b> when no row pair has identical minors and flips P → fall back to CACC.</li>
+      <li>Logic testing fails in code: <b>reachability</b> + <b>controllability</b>. Infeasibility detection is undecidable.</li>
+    </ul>
+    <p><b>When to use what:</b> 1 clause → PC; 2–3 → CoC; ≥4 → CACC. Avionics/safety → RACC.</p>
+    <div class="good"><b>Memory hook:</b> "Pick major → fix minors so it determines → flip major and test."</div>
+  </div>
+</div>
+
+<div class="box trap">
+  <h2>Ch 9 — Exam Traps</h2>
+  <div class="body">
+    <ul class="tight">
+      <li>PDC <b>subsumes</b> TSC (every production uses every terminal at least once eventually).</li>
+      <li>TSC ≡ Node Coverage; PDC ≡ Edge Coverage. <b>Memorize this bridge.</b></li>
+      <li>DC (all derivations) is essentially infinite for recursive grammars — never the answer to "best criterion".</li>
+      <li>Mutation kills are <b>per test</b>: a test kills m iff output differs.</li>
+      <li><b>Equivalent mutant</b>: cannot be killed; reduces achievable mutation score below 100%.</li>
+      <li>Valid mutants test <b>extra valid inputs</b>, not "wrong" ones — they still satisfy the grammar.</li>
+      <li>Invalid mutants test <b>robustness</b>: software must reject/handle them gracefully.</li>
+      <li>"Schema" = grammar + constraints (XML). Pure BNF doesn't enforce semantic constraints.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="box old">
+  <h2>Refresh — ISP Full Walkthrough: <code>triang(a,b,c)</code></h2>
+  <div class="body">
+    <p><b>Step 1 — Function:</b> <code>triang(a,b,c)</code> classifies a triangle.</p>
+    <p><b>Step 2 — Params:</b> a, b, c (int sides).</p>
+    <p><b>Step 3 — Domain (chars + blocks):</b></p>
+    <table>
+      <tr><th>Char</th><th>Blocks</th></tr>
+      <tr><td>C1: a vs 0</td><td>{a&gt;0, a=0, a&lt;0}</td></tr>
+      <tr><td>C2: b vs 0</td><td>{b&gt;0, b=0, b&lt;0}</td></tr>
+      <tr><td>C3: c vs 0</td><td>{c&gt;0, c=0, c&lt;0}</td></tr>
+      <tr><td>C4: triangle type</td><td>{scalene, isoceles, equilateral, invalid}</td></tr>
+    </table>
+    <p><b>Step 4 — Combos:</b> ACoC=3·3·3·4=108, ECC=4, PWC=3·4=12, BCC=1+(2+2+2+3)=10.</p>
+    <p><b>Step 5 — Values (BCC base = a=2,b=3,c=4, scalene):</b></p>
+    <table>
+      <tr><th>#</th><th>a</th><th>b</th><th>c</th><th>type</th></tr>
+      <tr><td>base</td><td>2</td><td>3</td><td>4</td><td>scalene</td></tr>
+      <tr><td>vary C1</td><td>0,-1</td><td>3</td><td>4</td><td>—</td></tr>
+      <tr><td>vary C4</td><td>3</td><td>3</td><td>3</td><td>equilateral, …</td></tr>
+    </table>
+    <div class="warn"><b>Constraint:</b> a=0 ∧ scalene = invalid combo → drop (ACoC/PWC) or replace (BCC).</div>
+  </div>
+</div>
+
+<div class="box old">
+  <h2>Refresh — Graph Walkthrough: small CFG</h2>
+  <div class="body">
+    <pre>1: if (x &gt; 0)
+2:    y = 1;
+3: else
+4:    y = 2;
+5: while (y &lt; 10)
+6:    y = y + 1;
+7: return y;</pre>
+    <p><b>CFG:</b> N={1,2,4,5,6,7}, N₀={1}, N<sub>f</sub>={7}.</p>
+    <pre>Edges: (1,2)(1,4)(2,5)(4,5)(5,6)(6,5)(5,7)</pre>
+    <p><b>NC test paths (1):</b> [1,2,5,6,5,7] visits all nodes.</p>
+    <p><b>EC needs both branches + loop iter:</b></p>
+    <ul class="tight">
+      <li>T1 = [1,2,5,6,5,7] (covers 1→2, 2→5, 5→6, 6→5, 5→7)</li>
+      <li>T2 = [1,4,5,7] (adds 1→4, 4→5)</li>
+    </ul>
+    <p><b>Simple paths through loop (5↔6) for PPC:</b> [5,6,5] is simple (first=last). All prime paths must include both branch and loop variations.</p>
+    <p><b>Prime paths (sample):</b></p>
+    <ul class="tight">
+      <li>[1,2,5,6] [1,2,5,7] [1,4,5,6] [1,4,5,7]</li>
+      <li>[6,5,6] [6,5,7] [5,6,5] (loop primes)</li>
+    </ul>
+    <p><b>PPC tour set:</b> 2 test paths can tour them all if loops re-entered:</p>
+    <ul class="tight">
+      <li>[1,2,5,6,5,6,5,7] (covers loop twice)</li>
+      <li>[1,4,5,7] (no-loop branch)</li>
+    </ul>
+    <p class="muted"><b>Touring with sidetrip:</b> [1,2,5,7] tours [1,2,5,6] only with sidetrip via 5→6→5.</p>
+  </div>
+</div>
+
+<div class="box old">
+  <h2>Refresh — Graph Worked Numbers</h2>
+  <div class="body">
+    <p><b>Hierarchy:</b> CPC ⊃ PPC ⊃ EPC ⊃ EC ⊃ NC. <b>PPC ⊉ EPC</b> due to self-loops (n→n is in EPC but not a simple/prime path).</p>
+    <p><b>Why does EC subsume NC?</b> path of length ≤ 1 covers length-0 (nodes) when every node has an out-edge AND a length-1 subpath exists between length-0 nodes.</p>
+    <p><b>Round-trip vs simple/prime:</b></p>
+    <ul class="tight">
+      <li>Round-trip path: simple path with first = last (loop). PP-loop coverage handles loops 0/1/&gt;1.</li>
+      <li>Prime path = maximal simple path; can't be extended.</li>
+    </ul>
+    <p><b>Touring strength:</b> Direct &gt; Sidetrip &gt; Detour. If direct infeasible, try sidetrip, then detour. Skip if all infeasible.</p>
+    <p><b>Best practical criterion:</b> <b>PPC</b>. Real industry: branch (EC).</p>
+  </div>
+</div>
+
+
+<!-- =================== CH 9 — SYNTAX (lighter focus) =================== -->
+
+<div class="box ch9">
+  <h2>Ch 9 — Grammar-Based / Syntax Testing</h2>
+  <div class="body">
+    <p><b>Core idea:</b> use a grammar of valid inputs to <b>generate</b> tests, and break it to produce <b>invalid</b> tests.</p>
+    <p><b>2 goals:</b> cover valid syntax + break syntax (invalid tests).</p>
+    <p><b>Input domains:</b> goal (should accept) ⊇ specified (spec) ⊇ implemented (code accepts). <b>Bugs live in the mismatches.</b></p>
+    <p><b>Grammar types:</b> Regex (simple patterns) · BNF (Backus-Naur Form, expressive) · XML+Schema (grammar + constraints).</p>
+  </div>
+</div>
+
+<div class="box ch9">
+  <h2>Ch 9 — Grammar Structure (BNF)</h2>
+  <div class="body">
+    <table class="kv">
+      <tr><td>Terminal</td><td>literal symbol that appears in final string (e.g. <code>"deposit"</code>, digits).</td></tr>
+      <tr><td>Non-terminal</td><td>variable/placeholder, expanded by rules (e.g. <code>&lt;action&gt;</code>).</td></tr>
+      <tr><td>Production rule</td><td><code>::=</code> line; how to expand a non-terminal (alternatives via <code>|</code>).</td></tr>
+      <tr><td>Start symbol</td><td>entry point of derivation.</td></tr>
+    </table>
+    <pre>&lt;txn&gt;    ::= &lt;action&gt; &lt;account&gt; &lt;amount&gt;
+&lt;action&gt; ::= "deposit" | "withdraw"
+&lt;account&gt;::= "checking" | "savings"
+&lt;amount&gt; ::= &lt;digit&gt; &lt;amount&gt; | &lt;digit&gt;
+&lt;digit&gt;  ::= "0" | "1" | … | "9"</pre>
+    <p>Sample derivation: <code>&lt;txn&gt; ⇒ "deposit" "savings" "50"</code>.</p>
+  </div>
+</div>
+
+<div class="box ch9">
+  <h2>Ch 9 — Coverage Criteria</h2>
+  <div class="body">
+    <table>
+      <tr><th>Crit</th><th>Requirement</th><th>Bound</th></tr>
+      <tr><td><b>TSC</b></td><td>Every <b>terminal</b> symbol used at least once</td><td>#terminals</td></tr>
+      <tr><td><b>PDC</b></td><td>Every <b>production rule</b> used at least once</td><td>#productions</td></tr>
+      <tr><td><b>DC</b></td><td>Every possible derived string</td><td>huge / ∞</td></tr>
+    </table>
+    <p><b>PDC subsumes TSC.</b> Grammar ↔ graph: <b>PDC ≡ EC</b> (edge coverage), <b>TSC ≡ NC</b> (node coverage). DC ≈ all paths — usually impractical.</p>
+    <p class="muted">Stream grammar: 13 TSC tests, 18 PDC tests, ~2×10⁹ DC tests.</p>
+  </div>
+</div>
+
+<div class="box ch9">
+  <h2>Ch 9 — Mutation Testing</h2>
+  <div class="body">
+    <table class="kv">
+      <tr><td>Ground string</td><td>valid string from grammar.</td></tr>
+      <tr><td>Mutation operator</td><td>rule that modifies a string.</td></tr>
+      <tr><td>Mutant</td><td>modified version (valid or invalid).</td></tr>
+      <tr><td>Kill mutant</td><td>test t kills mutant m if <code>output(orig) ≠ output(m)</code>.</td></tr>
+      <tr><td>Mutation score</td><td>fraction of mutants killed.</td></tr>
+    </table>
+    <p><b>Criteria:</b></p>
+    <ul class="tight">
+      <li><b>MC</b> (Mutation Coverage): kill every mutant.</li>
+      <li><b>MOC</b> (Mutation Operator Coverage): use each operator at least once.</li>
+      <li><b>MPC</b> (Mutation Production Coverage): mutate every production rule that the operator can apply to.</li>
+    </ul>
+    <div class="note"><b>Big picture:</b> valid strings → correctness; invalid strings → robustness; mutants → fault detection.</div>
+    <div class="good"><b>One-liner:</b> "Grammar defines inputs → tests are strings → mutation breaks them to expose bugs."</div>
+  </div>
+</div>
+
+<div class="box ch9">
+  <h2>Ch 9 — Mutation Examples (Bank Stream)</h2>
+  <div class="body">
+    <p><b>Ground strings</b> (valid):</p>
+    <pre>G 26 08.01.90
+B 22 06.27.94</pre>
+    <p><b>Valid mutants</b> (still in grammar):</p>
+    <pre>B 26 08.01.90    (changed action G→B)
+B 45 06.27.94    (changed amount 22→45)</pre>
+    <p><b>Invalid mutants</b> (break grammar):</p>
+    <pre>7 26 08.01.90    (action must be G or B)
+B 22 06.27.1     (date format wrong)</pre>
+    <p><b>Common mutation operator types:</b> replace terminal · swap order · drop symbol · duplicate · insert garbage · break recursion bound.</p>
+    <div class="warn"><b>Equivalent mutant problem:</b> mutant whose output is identical to original on every input — cannot be killed. Detection is undecidable.</div>
+  </div>
+</div>
+
+<!-- =================== OLD MATERIAL REFRESH =================== -->
+
+<div class="box old">
+  <h2>Refresh — Ch 5 Criteria-Based Design</h2>
+  <div class="body">
+    <p><b>4 structures for modeling SW:</b> Input Space (Ch 6) · Graphs (Ch 7) · Logic (Ch 8) · Syntax (Ch 9).</p>
+    <p><b>Test Requirement (TR):</b> a specific element a test must satisfy. <b>Coverage Criterion:</b> rule producing TRs.</p>
+    <p><b>Coverage Level</b> = #TR satisfied / #TR total.</p>
+    <p><b>Infeasible TR:</b> no test can satisfy it (e.g. dead code). Detection is <b>undecidable</b> → 100% coverage rarely possible.</p>
+    <p><b>Subsumption:</b> C₁ ⊃ C₂ if every C₁ test set also satisfies C₂. Subsumption ≠ better fault detection.</p>
+    <p><b>Recognizers &gt; Generators</b> in industry — recognizing tests is much easier than generating them.</p>
+  </div>
+</div>
+
+<div class="box old">
+  <h2>Refresh — Ch 6 Input Space (ISP) Formulas</h2>
+  <div class="body">
+    <p><b>Partition properties:</b> blocks must be <b>disjoint</b> (b<sub>i</sub> ∩ b<sub>j</sub> = ∅) AND <b>complete</b> (∪ b<sub>i</sub> = D).</p>
+    <p><b>5 steps:</b> identify functions → params → model domain (chars/blocks/values) → choose combos → select values.</p>
+    <table>
+      <tr><th>Crit</th><th>Formula</th><th>Note</th></tr>
+      <tr><td>ACoC</td><td>∏ |B<sub>i</sub>|</td><td>all combos, exponential</td></tr>
+      <tr><td>ECC</td><td>max |B<sub>i</sub>|</td><td>each block ≥ once</td></tr>
+      <tr><td>PWC</td><td>product of <b>2 largest</b></td><td>any pair appears ≥ once</td></tr>
+      <tr><td>TWC (t)</td><td>product of t largest</td><td>generalization</td></tr>
+      <tr><td>BCC</td><td>1 + Σ(|B<sub>i</sub>|−1)</td><td>1 base + vary 1 char/test</td></tr>
+      <tr><td>MBCC</td><td>M + Σ M(|B<sub>i</sub>|−M)</td><td>M base tests</td></tr>
+    </table>
+    <p><b>Subsumption:</b> ACoC ⊃ TWC ⊃ PWC ⊃ {ACoC} ; ACoC ⊃ MBCC ⊃ BCC ⊃ ECC. <b>PWC ⊉ ECC.</b></p>
+    <p><b>Constraints between chars:</b> <em>cannot combine</em> → drop combo (ACoC/PWC); <em>must combine</em> → replace value (BCC).</p>
+  </div>
+</div>
+
+<div class="box old">
+  <h2>Refresh — Ch 7 Graph Coverage</h2>
+  <div class="body">
+    <p><b>G</b>=(N,N₀,N<sub>f</sub>,E). <b>Visit</b> a node/edge = in path. <b>Tour</b> subpath = contained contiguously (stronger). <b>Syntactic reach</b> ≠ <b>semantic reach</b> (executable).</p>
+    <table>
+      <tr><th>Crit</th><th>TR</th></tr>
+      <tr><td>NC</td><td>all reachable nodes (= statement, weakest).</td></tr>
+      <tr><td>EC</td><td>length ≤ 1 paths (= branch). Subsumes NC.</td></tr>
+      <tr><td>EPC</td><td>length-2 paths (edge pairs).</td></tr>
+      <tr><td>PPC</td><td>all prime paths. Handles loops 0/1/&gt;1. Practical best.</td></tr>
+      <tr><td>CPC</td><td>complete paths — impossible w/ loops.</td></tr>
+      <tr><td>SPC</td><td>user-specified paths.</td></tr>
+    </table>
+    <p><b>Hierarchy:</b> CPC ⊃ PPC ⊃ EPC ⊃ EC ⊃ NC. <b>PPC ⊉ EPC</b> (self-loops).</p>
+  </div>
+</div>
+
+
+<div class="box trap">
+  <h2>Final Cross-Chapter Cheat</h2>
+  <div class="body">
+    <p><b>Bridges:</b> PDC≡EC, TSC≡NC. <b>CACC≡MC/DC</b> (FAA). <b>CoC=2<sup>n</sup></b>, ACoC=∏|B<sub>i</sub>|, PWC=product of 2 largest. Subsumption ≠ better fault detection. Infeasibility is <b>undecidable</b>. Three structural barriers: <b>reachability, infeasibility, controllability</b>.</p>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
